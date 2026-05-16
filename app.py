@@ -56,6 +56,7 @@ def get_items():
         {"id": 2, "name": "Item Two", "category": "demo"},
         {"id": 3, "name": "Item Three", "category": "demo"},
         {"id": 4, "name": "Item Four - NEW!", "category": "demo"},
+        {"id": 4, "name": "Item Five - NEW!", "category": "demo"},
     ]
     logger.info("Items endpoint called, returning %d items", len(items))
     return jsonify({"items": items, "count": len(items)}), 200
