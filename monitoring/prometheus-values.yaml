@@ -1,0 +1,57 @@
+# Prometheus Helm values override
+# Install: helm install prometheus prometheus-community/kube-prometheus-stack \
+#            -n monitoring --create-namespace -f monitoring/prometheus-values.yaml
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    # Scrape all pods with prometheus.io/scrape: "true"
+    additionalScrapeConfigs:
+      - job_name: flask-app
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - flask-app
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: "true"
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+
+grafana:
+  enabled: true
+  adminPassword: "admin"   # Change in production!
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      flask-app:
+        gnetId: 9628    # Flask/Gunicorn dashboard from Grafana.com
+        revision: 1
+        datasource: Prometheus
