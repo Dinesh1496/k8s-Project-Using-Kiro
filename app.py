@@ -56,7 +56,7 @@ def get_items():
         {"id": 2, "name": "Item Two", "category": "demo"},
         {"id": 3, "name": "Item Three", "category": "demo"},
         {"id": 4, "name": "Item Four - NEW!", "category": "demo"},
-        {"id": 4, "name": "Item Five - NEW!", "category": "demo"},
+        {"id": 5, "name": "Item Five - NEWEST!", "category": "demo"},
     ]
     logger.info("Items endpoint called, returning %d items", len(items))
     return jsonify({"items": items, "count": len(items)}), 200
@@ -65,7 +65,7 @@ def get_items():
 @app.route("/api/v1/items/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     """Get a single item by ID."""
-    if item_id < 1 or item_id > 3:
+    if item_id < 1 or item_id > 5:
         logger.warning("Item %d not found", item_id)
         return jsonify({"error": "Item not found"}), 404
     return jsonify({"id": item_id, "name": f"Item {item_id}", "category": "demo"}), 200

@@ -37,7 +37,7 @@ def test_get_items(client):
     assert response.status_code == 200
     data = response.get_json()
     assert "items" in data
-    assert data["count"] == 3
+    assert data["count"] == 5  # Updated: now we have 5 items
 
 
 def test_get_item_valid(client):
@@ -45,6 +45,22 @@ def test_get_item_valid(client):
     assert response.status_code == 200
     data = response.get_json()
     assert data["id"] == 1
+
+
+def test_get_item_four(client):
+    """Test the new Item Four."""
+    response = client.get("/api/v1/items/4")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["id"] == 4
+
+
+def test_get_item_five(client):
+    """Test the new Item Five."""
+    response = client.get("/api/v1/items/5")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["id"] == 5
 
 
 def test_get_item_not_found(client):
